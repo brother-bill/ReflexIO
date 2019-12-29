@@ -31,8 +31,8 @@ var isPlaying, lose;
 lose = isPlaying = false;
 
 // Initiliaze counters, timers, and indices
-var enemyTime, lastIteration, animation, timer, clickCount, scrollIndex;
-(enemyTime = lastIteration = animation = timer = clickCount = 0),
+var enemyTime, lastIteration, animation, timer, clickCount, scrollIndex, game;
+(enemyTime = lastIteration = animation = timer = clickCount = game = 0),
   (scrollIndex = 2); // 2 is default Hard difficulty index
 
 //Changes canvas size to a fixed amount
@@ -64,7 +64,6 @@ function setDifficulty(name) {
       difficulty.speed = 200;
   }
 }
-
 // Wait for player to change settings before starting the game
 function wait() {
   //Draw player and stats and redraw if difficulty changes
@@ -91,26 +90,12 @@ function wait() {
       //console.log("scrolling down");
     }
   });
+
   // Wait for player to start game
   document.addEventListener("mousedown", playerStart);
   document.addEventListener("keypress", playerStart);
   // 0 is left click, 1 is middle click, 2 is right click
 }
-
-// Update the game with given fps, default we do 144fps
-var game = new controlFps(144, function(e) {
-  drawStats();
-
-  // We calculate the time elapsed from each frame to the next to ensure the right player and enemy speed
-  var elapsed = e.time - lastIteration;
-  lastIteration = e.time;
-
-  // Every loop we will move the player and enemies according to the desired fps with elapsed time during a loop
-  movePlayer(elapsed);
-  renderPlayer();
-  moveEnemies(elapsed);
-  renderEnemies();
-});
 
 //Get mouse position on right click and set it to the location you want to head towards
 canvas.addEventListener(
@@ -123,6 +108,7 @@ canvas.addEventListener(
   },
   false
 );
+
 // We try to account for our calculations for time taken to compute next frame using delta time
 // Source: https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
 function controlFps(fps, callback) {
@@ -220,6 +206,7 @@ function renderEnemies() {
   }
 
   // Depending on the difficulty, we spawn enemies each time we over a time threshold. Ex: Spawn enemy every second / every 5 seconds
+  // Although using modulo is preferred, there were bugs on different computers where the time intervals were not as accurate as they should have been leading to inconsistent enemies between platforms
   if (enemyTime > difficulty.amount) {
     enemyTime = 0;
     enemies.push({
@@ -317,11 +304,13 @@ function hitbox(p) {
     document.addEventListener("mousedown", reload);
   }
 }
+var test = false;
 
-// Reload function if "r" or left click is used//////////////////
+// Reload page if left click or "R" is pressed
 function reload(event) {
   if ((event.button == 0 || event.key == "r") && !isPlaying && lose) {
     window.location.reload();
+
     /*
     player = [canvas.width / 2, canvas.height / 2];
     mousePosition = {
@@ -332,32 +321,7 @@ function reload(event) {
       (scrollIndex = 2);
 
     lose = isPlaying = false;
-    
-    game = new controlFps(144, function(e) {
-      drawStats();
-
-      // We calculate the time elapsed from each frame to the next to ensure the right player and enemy speed
-      var elapsed = e.time - lastIteration;
-      lastIteration = e.time;
-
-      // Every loop we will move the player and enemies according to the desired fps with elapsed time during a loop
-      movePlayer(elapsed);
-      renderPlayer();
-      moveEnemies(elapsed);
-      renderEnemies();
-
-      //Get mouse position on right click and set it to the location you want to head towards
-      canvas.addEventListener(
-        "contextmenu",
-        function(mouse) {
-          mousePosition.x = getMousePos(canvas, mouse).x;
-          mousePosition.y = getMousePos(canvas, mouse).y;
-        },
-        false
-      );
-    });
-
-    //wait();
+    wait();
     */
   }
 }
@@ -379,7 +343,6 @@ function scrollDifficulty(scroll) {
       break;
   }
 }
-
 // Start game is middle mouse button pressed or S pressed
 function playerStart(event) {
   // 0 is left click, 1 is middle click, 2 is right click
@@ -393,6 +356,19 @@ function playerStart(event) {
       enemyTime++;
     }, 100);
 
+    // Update the game with given fps, default we do 144fps
+    game = new controlFps(144, function(e) {
+      drawStats();
+      // We calculate the time elapsed from each frame to the next to ensure the right player and enemy speed
+      var elapsed = e.time - lastIteration;
+      lastIteration = e.time;
+
+      // Every loop we will move the player and enemies according to the desired fps with elapsed time during a loop
+      movePlayer(elapsed);
+      renderPlayer();
+      moveEnemies(elapsed);
+      renderEnemies();
+    });
     //Start the game
     game.start();
 

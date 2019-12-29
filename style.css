@@ -16,6 +16,10 @@
   height: 50px;
 }
 
+#wrapper {
+  outline: none;
+}
+
 body,
 head,
 * {
