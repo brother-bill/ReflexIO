@@ -1,93 +1,109 @@
-var player;
+window.onload = Construct();
+var c;
+var ctx;
+var mouse = {
+  x: 0,
+  y: 0
+};
+var lastStep = 0;
+var particles = [{
+  x: 0,
+  y: 0
+}];
 
-function startGame(){
+function Construct() {
+  setTimeout(function() {
+    c = document.getElementById("canvas");
+    ctx = c.getContext("2d");
+    c.addEventListener('contextmenu', function(e) {
+      var m = getMousePos(c, e);
+      mouse.x = m.x;
+      mouse.y = m.y;
+    }, false);
     
-    myGame.start();
-    
+    window.requestAnimationFrame(animationFrame);
+  }, .5);  
 }
 
-var myGame = {
-    wrapper : document.getElementById("wrapper"),
-    canvas : document.getElementById("reflex-io"),
-    start: function() {
-        this.context = this.canvas.getContext("2d");
-        window.addEventListener("resize", resizeCanvas, false);
-        resizeCanvas();
-        this.interval = setInterval(updateGame, 16.66667);
-    },
-    clear : function(){
-        
-        this.context.clearRect(0,0, this.canvas.width, this.canvas.height);
-        
-    }
+function animationFrame(milliseconds) {
+  var elapsed = milliseconds - lastStep;
+  lastStep = milliseconds;
+
+  render(elapsed);
+  
+  window.requestAnimationFrame(animationFrame);
 }
 
-function setCanvasScaling(){
-    return window.devicePixelRatio || 1;
+function getMousePos(canvas, evt) {
+  var rect = canvas.getBoundingClientRect();
+  var mouseX = evt.clientX - rect.top;
+  var mouseY = evt.clientY - rect.left;
+  return {
+    x: mouseX,
+    y: mouseY
+  };
 }
 
-function resizeCanvas() {
-    var pixelRatio = setCanvasScaling();
-    
-    //The viewport is in portrait mode, so var width should be based off viewport WIDTH
-    if (window.innerHeight > window.innerWidth) {
-        //Makes the canvas 100% of the viewport width
-        var width = Math.round(1.0 * window.innerWidth);
-    }
-    //The viewport is in landscape mode, so var width should be based off viewport HEIGHT
-    else {
-        //Makes the canvas 100% of the viewport height
-        var width = Math.round(1.0 * window.innerHeight);
-    }
-
-    var height = width;
-
-    myGame.wrapper.style.width = width-20 + "px";
-    myGame.wrapper.style.height = height-20 + "px";
-
-    myGame.canvas.width = width * pixelRatio;
-    myGame.canvas.height = height * pixelRatio;
-
-
-    player = new circlePlayer(25, 'red');
+function render(elapsed) {
+  setCanvasSize();
+  clearCanvas();
+  moveParticles(elapsed);
+  renderParticles();
 }
 
-
-function circlePlayer(radius, color){   
-    this.x = Math.round(myGame.canvas.width / 2);
-    this.y = Math.round(myGame.canvas.height / 2);
-    this.update = function() {
-        myGame.context.beginPath();
-        myGame.context.arc(this.x, this.y, radius, 0, 2* Math.PI)
-        myGame.context.fillStyle = color;
-        myGame.context.fill();
-        myGame.context.lineWidth = 5;
-        myGame.context.stroke();
-    }
+function setCanvasSize() {
+  ctx.canvas.width = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
 }
 
 
+function clearCanvas() {
+  ctx.globalCompositeOperation = "source-over";
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
 
+function moveParticles(milliseconds) {
+  particles.forEach(function(p) {
+    var data = distanceAndAngleBetweenTwoPoints(p.x, p.y, mouse.x, mouse.y);
+    var velocity = data.distance / 0.5;
+    var toMouseVector = new Vector(velocity, data.angle);
+    var elapsedSeconds = milliseconds / 1000;
 
-var mouseX = 500;
-var mouseY = 500;
+    p.x += (toMouseVector.magnitudeX * elapsedSeconds);
+    p.y += (toMouseVector.magnitudeY * elapsedSeconds);
+  });
+}
 
-$(document).mousedown(function(event) {
-    switch (event.which) {        
-        case 3:
-            mouseX = event.clientX;
-            mouseY = event.clientY;
-            //alert('Right Mouse button pressed.');
-            break;
-    }
-    
-});
+function renderParticles() {
+  particles.forEach(function(p) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.translate(p.x, p.y);
+    ctx.arc(0, 0, 10, 0, 2 * Math.PI);
+    ctx.fillStyle = "blue";
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  });
+}
 
+function distanceAndAngleBetweenTwoPoints(x1, y1, x2, y2) {
+  var x = x2 - x1,
+    y = y2 - y1;
 
-function updateGame(){
-    myGame.clear();
-    
-    //player.x +=1;
+  return {
+    // x^2 + y^2 = r^2
+    distance: Math.sqrt(x * x + y * y),
 
-    player.update();
+    // convert from radians to degrees
+    angle: Math.atan2(y, x) * 180 / Math.PI
+  }
+}
+
+function Vector(magnitude, angle) {
+  var angleRadians = (angle * Math.PI) / 180;
+
+  this.magnitudeX = magnitude * Math.cos(angleRadians);
+  this.magnitudeY = magnitude * Math.sin(angleRadians);
 }
