@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />
     <title>Document</title>
-</head>
-<body oncontextmenu="return false;" onload="startGame()">
-    <div id = "wrapper">
-            <canvas id = "canvas"></canvas>
+  </head>
+  <body oncontextmenu="return false;" onload="wait()">
+    <canvas id="reflex-io"></canvas>
+
+    <div id="buttons">
+      <button id="easy">Easy</button>
+      <button id="medium">Medium</button>
+      <button id="hard">Hard</button>
     </div>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js" ></script>
-    <script src="index.js" ></script>
-</body>
+
+    <h1>
+      PRESS S TO PLAY AND R TO RESTART<br />
+      RIGHT CLICK TO MOVE
+    </h1>
+    <script src="game.js"></script>
+  </body>
 </html>
