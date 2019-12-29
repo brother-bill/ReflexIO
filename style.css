@@ -3,17 +3,24 @@
   margin: auto;
   display: block;
   outline: none;
-
   background-color: white;
 }
 
 #wrapper {
   margin-top: 20px;
   display: flex;
-
   justify-content: center;
   border: 1px solid black;
+  height: 50px;
+}
 
+#buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  margin: 0px auto;
+  width: 700px;
   height: 50px;
 }
 
@@ -24,25 +31,17 @@ head,
   background-color: black;
 }
 
-#buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  margin: 10px auto;
-  width: 500px;
-  height: 50px;
-}
-
 button {
-  margin: 10px auto;
-  width: 100px;
+  margin: 0px auto;
+  width: 150px;
   height: 50px;
   text-align: center;
   color: white;
 }
+
 h1 {
   display: block;
   text-align: center;
   color: white;
+  margin: 0px auto;
 }

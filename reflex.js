@@ -1,9 +1,4 @@
-var player;
-
-var c;
-var ctx;
-var wrapper;
-
+//Initialize mouse location, enemies, player, and difficulty
 var mouseHead = {
   x: 0,
   y: 0
@@ -23,53 +18,34 @@ var difficulty = {
   mov: 300
 };
 
-function easy() {
-  difficulty.amount = 50;
-  difficulty.speed = 0.75;
-  difficulty.mov = 300;
-}
-
-function medium() {
-  difficulty.amount = 40;
-  difficulty.speed = 1;
-  difficulty.mov = 350;
-}
-
-function hard() {
-  difficulty.amount = 25;
-  difficulty.speed = 1.5;
-  difficulty.mov = 400;
-}
 var enemies = [];
-
-wrapper = document.getElementById("wrapper");
-
-c = document.getElementById("reflex-io");
-
-ctx = c.getContext("2d");
-
 var timer = 0;
-
 var initial = 0;
-
 var clickCount = 0;
+var id = 0;
+var request;
 
+// This is canvas object
+var c = document.getElementById("reflex-io");
+// Canvas context
+var ctx = c.getContext("2d");
+
+// Set the size of game window according to size of open window
 setCanvasSize();
 
 function wait() {
   ctx.fillStyle = "red";
   ctx.font = "20px Arial";
   ctx.fillText("Time: 0", 20, 20);
-
   ctx.fillStyle = "red";
   ctx.font = "20px Arial";
-  ctx.fillText("Click count: 0", 550, 20);
+  ctx.fillText("Click Count: 0", c.width - 140, 20);
 
+  // Wait for player to start game
   document.addEventListener("keyup", function(event) {
     if (event.key == "s" && initial == 0) {
       initial = 1;
       setInterval(setTime, 1000);
-
       function setTime() {
         ++timer;
       }
@@ -77,25 +53,14 @@ function wait() {
     }
   });
 }
-
-function resetGame() {
-  enemies = [];
-  timer = 0;
-  clickCount = 0;
-  request = 0;
-  startGame();
-}
-
-//oncontextmenu="return false;"
-//16.6666667
-
-var id = 0;
-var request;
-
+///////////////////////
 document.addEventListener("contextmenu", function(event) {
   clickCount += 1;
   console.log(clickCount);
 });
+////////////////////////
+
+// Start game and listen for right clicks
 function startGame() {
   setTimeout(function() {
     c.addEventListener(
@@ -120,6 +85,7 @@ function startGame() {
   }, 0.1);
 }
 
+// Calculate if we hit an enemy
 function hitbox(p) {
   //if (Math.abs(p.x - particles[0].x) < 1 && Math.abs(p.y - particles[0].y) < 1 )
 
@@ -133,13 +99,6 @@ function hitbox(p) {
     stop1();
   }
 }
-// c.addEventListener see the difference
-document.addEventListener("keyup", function(event) {
-  if (event.key == "r" && id == 1) {
-    id = 0;
-    resetGame();
-  }
-});
 
 function stop1() {
   if (request) {
@@ -174,31 +133,29 @@ function getMousePos(canvas, evt) {
 function updateGame(elapsed, lastStep) {
   clearCanvas();
   moveParticles(elapsed);
-  renderParticles(lastStep);
+  renderParticles();
   renderEnemies(lastStep);
 }
 
+//Changes canvas size to size of current window
 function setCanvasSize() {
-  c.width = window.innerWidth - 100;
-  c.height = window.innerHeight - 100;
-
-  /*
   if (window.innerWidth < window.innerHeight) {
-    c.style.width = window.innerWidth - 1500;
-    c.style.height = window.innerWidth - 150;
+    c.width = window.innerWidth - 150;
+    c.height = window.innerWidth - 150;
   } else {
-    c.style.width = window.innerHeight - 150;
-    c.style.height = window.innerHeight - 150;
+    c.width = window.innerHeight - 150;
+    c.height = window.innerHeight - 150;
   }
-  */
 }
 
-/*
-function setCanvasSize() {
-  c.width = 700;
-  c.height = 700;
+function resetGame() {
+  enemies = [];
+  timer = 0;
+  clickCount = 0;
+  request = 0;
+  startGame();
 }
-*/
+
 function moveParticles(milliseconds) {
   particles.forEach(function(p) {
     var data = distanceAndAngleBetweenTwoPoints(
@@ -231,6 +188,7 @@ function renderParticles() {
     ctx.fillStyle = "blue";
     ctx.fill();
     ctx.stroke();
+
     ctx.restore();
 
     ctx.fillStyle = "red";
@@ -305,9 +263,10 @@ function renderEnemies(time) {
     hitbox(p);
   });
 
+  moveEnemies();
 }
 
-function moveEnemies(edge) {
+function moveEnemies() {
   //0 is top
   //1  is left
   //2 is right
@@ -390,3 +349,30 @@ function clearCanvas() {
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, c.width, c.height);
 }
+
+/////////////////////
+document.addEventListener("keyup", function(event) {
+  if (event.key == "r" && id == 1) {
+    id = 0;
+    resetGame();
+  }
+});
+////////////////////
+
+document.getElementById("easy").onclick = function() {
+  difficulty.amount = 50;
+  difficulty.speed = 0.75;
+  difficulty.mov = 300;
+};
+
+document.getElementById("medium").addEventListener("click", function() {
+  difficulty.amount = 40;
+  difficulty.speed = 1;
+  difficulty.mov = 350;
+});
+
+document.getElementById("hard").addEventListener("click", function() {
+  difficulty.amount = 25;
+  difficulty.speed = 1.5;
+  difficulty.mov = 400;
+});
