@@ -9,7 +9,6 @@
 #buttons {
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: row;
   margin: 0px auto;
   width: 700px;
