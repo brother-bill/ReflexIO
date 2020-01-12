@@ -310,19 +310,6 @@ var test = false;
 function reload(event) {
   if ((event.button == 0 || event.key == "r") && !isPlaying && lose) {
     window.location.reload();
-
-    /*
-    player = [canvas.width / 2, canvas.height / 2];
-    mousePosition = {
-      x: player[0],
-      y: player[1]
-    };
-    (enemyTime = lastIteration = animation = timer = clickCount = 0),
-      (scrollIndex = 2);
-
-    lose = isPlaying = false;
-    wait();
-    */
   }
 }
 

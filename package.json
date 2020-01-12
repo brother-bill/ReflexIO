@@ -1,0 +1,23 @@
+{
+  "name": "testmocha",
+  "version": "1.0.0",
+  "description": "Simple unit testing using mocha and chai",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TahaBilalCS/ReflexIO.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TahaBilalCS/ReflexIO/issues"
+  },
+  "homepage": "https://github.com/TahaBilalCS/ReflexIO#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.0.0"
+  }
+}
