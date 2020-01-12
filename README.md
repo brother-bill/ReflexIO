@@ -32,7 +32,7 @@ npm install
 npm run test
 ```
 
-## Author
+# Author
 **Bilal Taha**
 
 
