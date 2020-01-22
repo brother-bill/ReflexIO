@@ -1,37 +1,37 @@
 // This is the canvas object
-var canvas = document.getElementById("reflex-io");
+let canvas = document.getElementById("reflex-io");
 
 // Context taken from canvas
-var ctx = canvas.getContext("2d");
+let ctx = canvas.getContext("2d");
 
 // Set the size of game window according to size of open window
 setCanvasSize();
 
 // Start player in middle of canvas
-var player = [canvas.width / 2, canvas.height / 2];
+let player = [canvas.width / 2, canvas.height / 2];
 
 // Player heads in direction of mousePosition, set equal to player initial position
-var mousePosition = {
+let mousePosition = {
   x: player[0],
   y: player[1]
 };
 
 // Default difficulty set to hard as most players want to quickly get back into the challenge
-var difficulty = {
+let difficulty = {
   amount: 1,
   speed: 200,
   name: "Hard"
 };
 
 // Initialize list where we store our enemies
-var enemies = [];
+let enemies = [];
 
 // Need both of these variables to prevent player from changing settings while playing but not losing
-var isPlaying, lose;
+let isPlaying, lose;
 lose = isPlaying = false;
 
 // Initiliaze counters, timers, and indices
-var enemyTime, lastIteration, animation, timer, clickCount, scrollIndex, game;
+let enemyTime, lastIteration, animation, timer, clickCount, scrollIndex, game;
 (enemyTime = lastIteration = animation = timer = clickCount = game = 0),
   (scrollIndex = 2); // 2 is default Hard difficulty index
 
@@ -112,13 +112,13 @@ canvas.addEventListener(
 // We try to account for our calculations for time taken to compute next frame using delta time
 // Source: https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
 function controlFps(fps, callback) {
-  var frameRate = 1000 / fps,
+  let frameRate = 1000 / fps,
     time = null,
     currentFrame = -1;
 
   function loop(milliseconds) {
     if (time === null) time = milliseconds; // Intial time
-    var segment = Math.floor((milliseconds - time) / frameRate); // This is the n-th frame
+    let segment = Math.floor((milliseconds - time) / frameRate); // This is the n-th frame
 
     // If we moved to next frame then update
     if (segment > currentFrame) {
@@ -154,19 +154,19 @@ function renderPlayer() {
 
 //Calculate the move speed of player and change their position according to the location clicked on
 function movePlayer(time) {
-  var points = getAngleAndDistance(
+  let points = getAngleAndDistance(
     player[0],
     player[1],
     mousePosition.x,
     mousePosition.y
   );
-  var velocity = 300;
+  let velocity = 300;
 
   // Millisecond to second conversion
-  var elapsedSeconds = time / 1000;
+  let elapsedSeconds = time / 1000;
 
   // Find vector given velocity and angle between player and enemy
-  var toMouseVector = getVector(velocity, points.angle);
+  let toMouseVector = getVector(velocity, points.angle);
 
   // If the player is more than 5 pixels away from where we clicked, then move the player
   if (points.distance > 5) {
@@ -177,11 +177,11 @@ function movePlayer(time) {
 
 // We draw each enemy at a random edge and push the enemy to the list
 function renderEnemies() {
-  var randomStartX = 0;
-  var randomStartY = 0;
+  let randomStartX = 0;
+  let randomStartY = 0;
 
   // Pick a random edge out of the 4 options
-  var rand = Math.floor(Math.random() * 4);
+  let rand = Math.floor(Math.random() * 4);
 
   // Set the coordinate for an enemy based on which edge they spawn in
   switch (rand) {
@@ -229,9 +229,9 @@ function moveEnemies(time) {
   // For each enemy we will update their location and speed according to each frame interval
   enemies.forEach(function(p) {
     // Millisecond to second conversion
-    var elapsed = time / 1000;
-    var speedX = difficulty.speed * elapsed;
-    var speedY = difficulty.speed * elapsed;
+    let elapsed = time / 1000;
+    let speedX = difficulty.speed * elapsed;
+    let speedY = difficulty.speed * elapsed;
 
     // 0 is top edge
     // 1 is left edge
@@ -288,9 +288,9 @@ function moveEnemies(time) {
 
 // Calculate if player hits an enemy
 function hitbox(p) {
-  var dx = p.x - player[0];
-  var dy = p.y - player[1];
-  var distance = Math.sqrt(dx * dx + dy * dy);
+  let dx = p.x - player[0];
+  let dy = p.y - player[1];
+  let distance = Math.sqrt(dx * dx + dy * dy);
 
   //Radius of player and enemies is 10, add them both together for collision
   if (distance < 20 && animation) {
@@ -304,7 +304,7 @@ function hitbox(p) {
     document.addEventListener("mousedown", reload);
   }
 }
-var test = false;
+let test = false;
 
 // Reload page if left click or "R" is pressed
 function reload(event) {
@@ -390,9 +390,9 @@ document.getElementById("hard").onclick = function() {
 
 //Get the mouse position on the canvas
 function getMousePos(canvas, evt) {
-  var rect = canvas.getBoundingClientRect();
-  var mouseX = evt.clientX - rect.left;
-  var mouseY = evt.clientY - rect.top;
+  let rect = canvas.getBoundingClientRect();
+  let mouseX = evt.clientX - rect.left;
+  let mouseY = evt.clientY - rect.top;
   return {
     x: mouseX,
     y: mouseY
@@ -413,7 +413,7 @@ function drawStats() {
 
 // Calculate vector given velocity and angle
 function getVector(velocity, angle) {
-  var angleRadians = (angle * Math.PI) / 180;
+  let angleRadians = (angle * Math.PI) / 180;
   return {
     magnitudeX: velocity * Math.cos(angleRadians),
     magnitudeY: velocity * Math.sin(angleRadians)
@@ -422,7 +422,7 @@ function getVector(velocity, angle) {
 
 // Get the distance and angle between two points
 function getAngleAndDistance(x1, y1, x2, y2) {
-  var deltaX = x2 - x1,
+  let deltaX = x2 - x1,
     deltaY = y2 - y1;
 
   //Pythagorean Theorem
